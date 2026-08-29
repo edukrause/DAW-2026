@@ -4,6 +4,8 @@
 
     --bg: #FAFAF9;
     --primary: #ea5800;
+
+    --border: #E7E5E4;
 }
 
 /*GENERICS*/
@@ -20,14 +22,14 @@ body {
     background-color: var(--bg);
 }
 
-.container {
+.container,main{
     width: auto;
     margin-inline: auto;
     padding-inline: 1.5rem;
 }
 
 /* CABECHALHO*/
-header {
+body > header {
     background-color: #ffffff;
 }
 
@@ -62,7 +64,7 @@ header .brand p {
 
 header .cart-button {
     display: flex;    
-    border: 1px solid #E7E5E4;
+    border: 1px solid var(--border);
     width: 2.75rem;
     height: 2.75rem;
     align-items: center;
@@ -73,6 +75,110 @@ header .cart-button {
 header .cart-button img {
     width: 1.25rem;
     height: 1.25rem;
+}
+
+/*MAIN*/
+main {
+    display: grid;
+    gap: 1.5rem;
+    padding-block: 1.5rem;
+}
+
+main > section{
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+}
+
+main > section > header {
+    display: flex;
+    grid-column: 1 / -1;
+    justify-content: space-between;
+    align-items: center;
+    padding-block: 0.5rem;
+}
+
+main > section header p {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+main > section article {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background-color: #fff;
+    box-shadow: 0 1px 2px 8px rgba(36, 33, 31, 7%);
+}
+
+section article figure {
+    grid-column: 1 / -1;
+    position: relative;
+}
+
+section article figure img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+section article figure figcaption {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background-color: var(--primary);
+    color: #fff;
+    font-size: 0.75rem;
+    text-transform: lowercase;
+    padding-block: 0.2rem;
+    padding-inline: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+section article h3, section article p:first-of-type {
+    grid-column: 1 / -1;
+    padding-inline: 1rem;
+}
+
+section article h3 {
+    padding-top: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+}
+
+section article p:first-of-type {
+    color: var(--text-muted);
+    padding-top: 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.3rem;
+}
+
+section article p:last-of-type {
+    grid-column: 1;
+    align-self: center;
+    padding-inline: 1rem;
+    color:var(--primary);
+    padding-block: 1rem;
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+section article button {
+    background-color: var(--primary);
+    color: #fff;
+    border: 0;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    grid-column: 2;
+    align-self: center;
+    margin-right: 1rem;
 }
 
 /*FOOTER*/
@@ -89,7 +195,7 @@ footer{
 /*NAVEGAÇÃO*/
 nav {
     background-color: #ffffff;
-    border-bottom: 1px solid #E7E5E4;
+    border-bottom: 1px solid var(--border);
 }
 
 ul {
@@ -100,7 +206,7 @@ ul {
 }
 
 nav ul a {
-    border: 1px solid #E7E5E4;
+    border: 1px solid var(--border);
     border-radius: 1rem;
     padding: 0.5rem 1rem;   
     text-decoration: none;
