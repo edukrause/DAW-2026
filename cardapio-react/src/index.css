@@ -113,6 +113,7 @@ header .cart-button img {
     z-index: 10;
 }
 nav ul {
+    background-color: transparent;
     display: flex;
     list-style: none;
     gap: .5rem;
@@ -125,7 +126,10 @@ nav ul {
 nav ul li {
     flex: 0 0 auto;
 }
-nav ul a {
+nav ul button {
+    background-color: transparent;
+    font-family: inherit;
+    cursor: pointer;
     border: 1px solid var(--border);
     border-radius: 999px;
     padding: .5rem 1rem;
@@ -134,12 +138,12 @@ nav ul a {
     font-size: 0.875rem;
     font-weight: 500;
 }
-nav ul a.active {
+nav ul button.active {
     border-color: var(--primary);
     background-color: var(--primary);
     color: #fff;
 }
-nav ul a:not(a.active):hover {
+nav ul button:not(.active):hover {
     border-color: var(--primary);
     color: var(--primary);
 }
