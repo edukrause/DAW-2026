@@ -1,143 +1,143 @@
+import { useRef, useState } from 'react'
 import { Header } from './components/layout/header'
 import { NavBar } from './components/layout/navBar'
 import { Footer } from './components/layout/footer'
+import { categories } from './data/categories'
+import { products } from './data/products'
+
+const formatPrice = (value: number) =>
+  value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
 function App() {
+  const confirmationRef = useRef<HTMLDialogElement>(null);
+  const [pendingProduct, setPendingProduct] = useState<(typeof products)[number] | null>(null);
+
+  function requestAdd(product: (typeof products)[number]) {
+    setPendingProduct(product);
+    confirmationRef.current?.showModal();
+  }
+
+  const [cart, setCart] = useState<Record<string, number>>({});
+  const cartItems = products
+    .filter((product) => (cart[product.id] ?? 0) > 0)
+    .map((product) => ({ ...product, quantity: cart[product.id] }));
+  const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const total = cartItems.reduce((sum, item) => sum + Math.round(item.price * 100) * item.quantity, 0) / 100;
+
+  function changeQuantity(id: string, amount: number) {
+    setCart((current) => {
+      const next = { ...current };
+      const quantity = (next[id] ?? 0) + amount;
+      if (quantity > 0) next[id] = quantity;
+      else delete next[id];
+      return next;
+    });
+  }
+
+  const [activeCategory, setActiveCategory] = useState("todos");
+  const selectedCategory = categories.find((category) => category.alias === activeCategory);
+  const visibleProducts = products.filter((product) =>
+    activeCategory === "todos" || product.category === activeCategory
+  );
 
   return (
     <>
-      <Header />
+      <Header itemCount={itemCount} />
 
-      <NavBar />
+      <NavBar
+        categories={categories}
+        activeCategory={activeCategory}
+        onSelectCategory={setActiveCategory}
+      />
 
       <main>
         <section>
           <header>
             <h2>Produtos</h2>
-            <p>Categoria <span id="selected-category">Todos</span>: 10 itens</p>
+            <p>Categoria <span id="selected-category">{selectedCategory?.label}</span>: {visibleProducts.length} itens</p>
           </header>
 
-          <article>
-            <figure>
-              <img src="/assets/img/burguer.png" alt="Burguer" />
-              <figcaption>Lanches</figcaption>
-            </figure>
-            <h3>Burguer</h3>
-            <p>Pão brioche, hambúrguer 160g, queijo prato e molho da casa.</p>
-            <p><strong>R$ 22,00</strong></p>
-            <button type="button">Adicionar</button>
-          </article>
-
-          <article>
-            <figure>
-              <img src="/assets/img/burguer-bacon.png" alt="Bacon Burger" />
-              <figcaption>Lanches</figcaption>
-            </figure>
-            <h3>Bacon Burger</h3>
-            <p>Pão brioche, hambúrguer 160g, bacon, queijo cheddar e molho da casa.</p>
-            <p><strong>R$ 25,00</strong></p>
-            <button type="button">Adicionar</button>
-          </article>
-
-          <article>
-            <figure>
-              <img src="/assets/img/burguer-double.png" alt="Duplo Burguer" />
-              <figcaption>Lanches</figcaption>
-            </figure>
-            <h3>Duplo Burguer</h3>
-            <p>Dois hambúrgueres de 160g cada, cheddar, bacon e cebola caramelizada.</p>
-            <p><strong>R$ 29,00</strong></p>
-            <button type="button">Adicionar</button>
-          </article>
-
-          <article>
-            <figure>
-              <img src="/assets/img/batata-rustica.png" alt="Batata Rústica" />
-              <figcaption>Porções</figcaption>
-            </figure>
-            <h3>Batata Rústica</h3>
-            <p>Porção de batata com alecrim, parmesao e maionese verde.</p>
-            <p><strong>R$ 18,00</strong></p>
-            <button type="button">Adicionar</button>
-          </article>
-
-          <article>
-            <figure>
-              <img src="/assets/img/batata-tradicional.png" alt="Batata Tradicional" />
-              <figcaption>Porções</figcaption>
-            </figure>
-            <h3>Batata Tradicional</h3>
-            <p>Porção de batata e maionese verde.</p>
-            <p><strong>R$ 15,00</strong></p>
-            <button type="button">Adicionar</button>
-          </article>
-
-          <article>
-            <figure>
-              <img src="/assets/img/agua.png" alt="Água Sem Gás" />
-              <figcaption>Bebida</figcaption>
-            </figure>
-            <h3>Água Sem Gás</h3>
-            <p>Garrafa descartável de água sem gás com 500 ml.</p>
-            <p><strong>R$ 8,00</strong></p>
-            <button type="button">Adicionar</button>
-          </article>
-
-          <article>
-            <figure>
-              <img src="/assets/img/refri.png" alt="Refrigerante" />
-              <figcaption>Bebida</figcaption>
-            </figure>
-            <h3>Refrigerante 300 ml</h3>
-            <p>Copo de refrigerante de 300 ml.</p>
-            <p><strong>R$ 10,00</strong></p>
-            <button type="button">Adicionar</button>
-          </article>
-
-          <article>
-            <figure>
-              <img src="/assets/img/chopp.png" alt="Chopp" />
-              <figcaption>Bebida</figcaption>
-            </figure>
-            <h3>Chopp 300 ml</h3>
-            <p>Caneca de 300 ml do nosso chopp pilsen geladíssimo.</p>
-            <p><strong>R$ 15,00</strong></p>
-            <button type="button">Adicionar</button>
-          </article>
-
-          <article>
-            <figure>
-              <img src="/assets/img/petit-gateau.png" alt="Petit Gateau" />
-              <figcaption>Sobremesa</figcaption>
-            </figure>
-            <h3>Petit Gateau</h3>
-            <p>Petit Gateau com uma bola de sorvete de creme.</p>
-            <p><strong>R$ 25,00</strong></p>
-            <button type="button">Adicionar</button>
-          </article>
-
-          <article>
-            <figure>
-              <img src="/assets/img/mousse-maracuja.png" alt="Mousse de Maracujá" />
-              <figcaption>Sobremesa</figcaption>
-            </figure>
-            <h3>Mousse de Maracujá</h3>
-            <p>Mousse de maracujá feito com a fruta de verdade.</p>
-            <p><strong>R$ 18,00</strong></p>
-            <button type="button">Adicionar</button>
-          </article>
+          {visibleProducts.map((product) => (
+            <article key={product.id}>
+              <figure>
+                <img src={product.image} alt={product.alt} />
+                <figcaption>{categories.find((category) => category.alias === product.category)?.label}</figcaption>
+              </figure>
+              <h3>{product.name}</h3>
+              <p>{product.description}</p>
+              <p><strong>{product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong></p>
+              <button type="button" onClick={() => requestAdd(product)}>Adicionar</button>
+            </article>
+          ))}
         </section>
 
-        <aside>
+        <aside id="cart">
           <h2>Seu pedido</h2>
 
-          <div className="cart-empty">
-            <img src="/assets/img/cart.svg" alt="Carrinho vazio" />
-            <p>Seu carrinho está vazio</p>
-            <p>Escolha um item do cardápio para começar</p>
-          </div>
+          <p className="cart-status" role="status">{itemCount} {itemCount === 1 ? 'item no carrinho' : 'itens no carrinho'}</p>
+          {cartItems.length === 0 ? (
+            <div className="cart-empty">
+              <img src="/assets/img/cart.svg" alt="Carrinho vazio" />
+              <p>Seu carrinho está vazio</p>
+              <p>Escolha um item do cardápio para começar</p>
+            </div>
+          ) : (
+            <>
+              <ul className="cart-items">
+                {cartItems.map((item) => (
+                  <li className="cart-item" key={item.id}>
+                    <img src={item.image} alt={item.alt} />
+                    <div className="cart-item-details">
+                      <h3>{item.name}</h3>
+                      <p>{formatPrice(item.price)} cada</p>
+                      <div className="cart-quantity">
+                        <button type="button" aria-label={`Diminuir quantidade de ${item.name}`} onClick={() => changeQuantity(item.id, -1)}>−</button>
+                        <span aria-label="Quantidade">{item.quantity}</span>
+                        <button type="button" aria-label={`Aumentar quantidade de ${item.name}`} onClick={() => requestAdd(item)}>+</button>
+                      </div>
+                      <button className="cart-remove" type="button" onClick={() => setCart((current) => {
+                        const next = { ...current };
+                        delete next[item.id];
+                        return next;
+                      })}>Remover {item.name}</button>
+                    </div>
+                    <strong>{formatPrice(Math.round(item.price * 100) * item.quantity / 100)}</strong>
+                  </li>
+                ))}
+              </ul>
+              <div className="cart-summary">
+                <p><span>Total</span><strong>{formatPrice(total)}</strong></p>
+                <button type="button" onClick={() => setCart({})}>Esvaziar carrinho</button>
+              </div>
+            </>
+          )}
         </aside>
       </main>
+
+      <dialog
+        ref={confirmationRef}
+        className="confirm-modal"
+        aria-labelledby="confirm-add-title"
+        aria-describedby="confirm-add-description"
+        onClose={() => setPendingProduct(null)}
+      >
+        <h2 id="confirm-add-title">Adicionar ao carrinho?</h2>
+        {pendingProduct && (
+          <>
+            <img className="confirm-product-image" src={pendingProduct.image} alt={pendingProduct.alt} />
+            <p id="confirm-add-description">Deseja adicionar uma unidade de <strong>{pendingProduct.name}</strong> ao seu pedido?</p>
+            <p className="confirm-price">{formatPrice(pendingProduct.price)}</p>
+          </>
+        )}
+        <div className="confirm-actions">
+          <button type="button" autoFocus onClick={() => confirmationRef.current?.close()}>Cancelar</button>
+          <button type="button" className="confirm-add" onClick={() => {
+            if (!pendingProduct || !confirmationRef.current?.open) return;
+            changeQuantity(pendingProduct.id, 1);
+            confirmationRef.current.close();
+          }}>Sim, adicionar</button>
+        </div>
+      </dialog>
 
       <Footer />
     </>

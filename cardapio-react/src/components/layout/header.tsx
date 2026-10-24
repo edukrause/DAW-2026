@@ -1,4 +1,8 @@
-export function Header() {
+type HeaderProps = {
+    itemCount: number;
+};
+
+export function Header({ itemCount }: HeaderProps) {
     return (
         <header>
             <div className="container">
@@ -9,9 +13,10 @@ export function Header() {
                         <p>Faça o seu pedido pelo nosso cardápio digital</p>
                     </div>
                 </div>
-                <div className="cart-button">
-                    <img src="/assets/img/cart.svg" alt="Carrinho" />
-                </div>
+                <a className="cart-button" href="#cart" aria-label={`Ver carrinho: ${itemCount} itens`}>
+                    <img src="/assets/img/cart.svg" alt="" />
+                    {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
+                </a>
             </div>
         </header>
     );
